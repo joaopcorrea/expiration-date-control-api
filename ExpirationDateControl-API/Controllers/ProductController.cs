@@ -59,5 +59,47 @@ namespace ExpirationDateControl_API.Controllers
                 return Created("", response);
             }
         }
+
+        [HttpPut("{id}")]
+        public ObjectResult Put(int id)
+        {
+            var response = repository.Create(product);
+            if (response == null)
+            {
+                throw new Exception("Não foi possível adicionar o produto");
+            }
+            else
+            {
+                return Created("", response);
+            }
+        }
+
+        [HttpPatch("{id}")]
+        public ObjectResult Patch(int id)
+        {
+            var response = repository.Create(product);
+            if (response == null)
+            {
+                throw new Exception("Não foi possível adicionar o produto");
+            }
+            else
+            {
+                return Created("", response);
+            }
+        }
+
+        [HttpDelete("{id}")]
+        public ObjectResult Remove(int id)
+        {
+            var response = repository.Create(product);
+            if (response == null)
+            {
+                throw new Exception("Não foi possível adicionar o produto");
+            }
+            else
+            {
+                return Created("", response);
+            }
+        }
     }
 }

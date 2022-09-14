@@ -1,12 +1,22 @@
-﻿namespace ExpirationDateControl_API.Models
+﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
+
+namespace ExpirationDateControl_API.Models
 {
     public class Product
     {
+        [Key]
+        [JsonPropertyName("id")]
         public int Id { get; set; }
-        public string BarCode { get; set; }
+        [JsonPropertyName("barcode")]
+        public string Barcode { get; set; }
+        [JsonPropertyName("description")]
         public string Description { get; set; }
+        [JsonPropertyName("create_date")]
         public DateTime CreateDate { get; set; }
+        [JsonPropertyName("price")]
         public double Price { get; set; }
+        [JsonPropertyName("quantity")]
         public int Quantity { get; set; }
     }
 }
