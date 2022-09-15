@@ -34,4 +34,11 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+var scopedFactory = app.Services.GetService<IServiceScopeFactory>();
+using (var scope = scopedFactory.CreateScope())
+{
+    var service = scope.ServiceProvider.GetService<DataGenerator>();
+    service.Generate();
+}
+
 app.Run();

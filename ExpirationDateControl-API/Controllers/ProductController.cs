@@ -1,4 +1,5 @@
 ﻿using ExpirationDateControl_API.Dtos;
+using ExpirationDateControl_API.Models;
 using ExpirationDateControl_API.Repositories.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -47,8 +48,10 @@ namespace ExpirationDateControl_API.Controllers
         }
 
         [HttpPost]
-        public ObjectResult Create([FromBody] ProductDto product)
+        public ObjectResult Create([FromBody] ProductDto productDto)
         {
+            var product = ConvertProductDtoToModel(productDto);
+
             var response = repository.Create(product);
             if (response == null)
             {
@@ -61,12 +64,14 @@ namespace ExpirationDateControl_API.Controllers
         }
 
         [HttpPut("{id}")]
-        public ObjectResult Put(int id)
+        public ObjectResult Put(int id, [FromBody] ProductDto productDto)
         {
-            var response = repository.Create(product);
+            var product = ConvertProductDtoToModel(productDto);
+
+            var response = repository.Put(id, product);
             if (response == null)
             {
-                throw new Exception("Não foi possível adicionar o produto");
+                throw new Exception("Não foi possível atualizar o produto");
             }
             else
             {
@@ -75,12 +80,14 @@ namespace ExpirationDateControl_API.Controllers
         }
 
         [HttpPatch("{id}")]
-        public ObjectResult Patch(int id)
+        public ObjectResult Patch(int id, [FromBody] ProductDto productDto)
         {
-            var response = repository.Create(product);
+            var product = ConvertProductDtoToModel(productDto);
+
+            var response = repository.Patch(id, product);
             if (response == null)
             {
-                throw new Exception("Não foi possível adicionar o produto");
+                throw new Exception("Não foi possível atualizar o produto");
             }
             else
             {
@@ -89,17 +96,31 @@ namespace ExpirationDateControl_API.Controllers
         }
 
         [HttpDelete("{id}")]
-        public ObjectResult Remove(int id)
+        public ObjectResult Delete(int id)
         {
-            var response = repository.Create(product);
+            var response = repository.Delete(id);
             if (response == null)
             {
-                throw new Exception("Não foi possível adicionar o produto");
+                throw new Exception("Não foi possível remover o produto");
             }
             else
             {
                 return Created("", response);
             }
+        }
+
+        private Product ConvertProductDtoToModel(ProductDto dto)
+        {
+            var model = new Product()
+            {
+                Barcode = dto.BarCode,
+                Description = dto.Description,
+                Price = dto.Price,
+                Quantity = dto.Quantity,
+                CreateDate = dto.CreateDate
+            };
+
+            return model;
         }
     }
 }
