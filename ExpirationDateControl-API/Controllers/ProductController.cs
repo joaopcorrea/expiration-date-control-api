@@ -1,7 +1,7 @@
 ﻿using ExpirationDateControl_API.Dtos;
 using ExpirationDateControl_API.Models;
 using ExpirationDateControl_API.Repositories.Interfaces;
-using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ExpirationDateControl_API.Controllers
@@ -17,6 +17,7 @@ namespace ExpirationDateControl_API.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public ActionResult GetAll(int page = 1, int maxResults = 100)
         {
             var products = repository.GetAll(page, maxResults);

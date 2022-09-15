@@ -1,6 +1,9 @@
-﻿namespace ExpirationDateControl_API.Repositories.Interfaces
+﻿using ExpirationDateControl_API.AuthorizationAndAuthentication;
+
+namespace ExpirationDateControl_API.Repositories.Interfaces
 {
-    public class ILoginRepository
+    public interface ILoginRepository
     {
+        Authenticate? Login(string username, string password);
     }
 }
