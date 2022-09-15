@@ -19,6 +19,8 @@ builder.Services.AddDbContext<InMemoryContext>(options => options.UseInMemoryDat
 
 builder.Services.AddScoped(typeof(IProductRepository), typeof(ProductRepository));
 
+builder.Services.AddTransient<DataGenerator>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

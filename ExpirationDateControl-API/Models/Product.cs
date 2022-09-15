@@ -7,16 +7,16 @@ namespace ExpirationDateControl_API.Models
     {
         [Key]
         [JsonPropertyName("id")]
-        public int Id { get; set; }
+        public int? Id { get; set; }
         [JsonPropertyName("barcode")]
-        public string Barcode { get; set; }
+        public string? Barcode { get; set; }
         [JsonPropertyName("description")]
-        public string Description { get; set; }
+        public string? Description { get; set; }
         [JsonPropertyName("create_date")]
-        public DateTime CreateDate { get; set; }
+        public DateTime? CreateDate { get; set; }
         [JsonPropertyName("price")]
-        public double Price { get; set; }
+        public double? Price { get; set; }
         [JsonPropertyName("quantity")]
-        public int Quantity { get; set; }
+        public int? Quantity { get; set; }
     }
 }

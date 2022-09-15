@@ -1,4 +1,6 @@
 ﻿using ExpirationDateControl_API.Models;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using System.Text.Json;
 
 namespace ExpirationDateControl_API.Context
@@ -20,7 +22,7 @@ namespace ExpirationDateControl_API.Context
                 using (StreamReader reader = new StreamReader("productsData.json"))
                 {
                     string json = reader.ReadToEnd();
-                    items = JsonSerializer.Deserialize<List<Product>>(json);
+                    items = JsonConvert.DeserializeObject<List<Product>>(json, new IsoDateTimeConverter { DateTimeFormat = "dd/MM/yyyy" });
                 }
 
                 _inMemoryContext.Products.AddRange(items);

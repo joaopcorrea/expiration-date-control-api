@@ -1,6 +1,7 @@
 ﻿using ExpirationDateControl_API.Dtos;
 using ExpirationDateControl_API.Models;
 using ExpirationDateControl_API.Repositories.Interfaces;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ExpirationDateControl_API.Controllers
@@ -16,109 +17,101 @@ namespace ExpirationDateControl_API.Controllers
         }
 
         [HttpGet]
-        public ObjectResult GetAll()
+        public ActionResult GetAll(int page = 1, int maxResults = 100)
         {
-            var products = new List<ProductDto>()
-            {
-                new ProductDto {
-                    BarCode = "barcode",
-                    CreateDate = DateTime.Now
-                },
-                new ProductDto {
-                    BarCode = "barcode",
-                    CreateDate = DateTime.Now
-                }
-            };
+            var products = repository.GetAll(page, maxResults);
+            if (!products.Any())
+                return NotFound();
+
+            return Ok(products);
+        }
+
+        [HttpPost("query")]
+        public ActionResult GetByFilter([FromBody] ProductDto productDto, int page = 1, int maxResults = 100)
+        {
+            var productModel = ConvertProductDtoToModel(productDto);
+            var products = repository.GetByFilter(page, maxResults, productModel);
+            if (!products.Any())
+                return NotFound();
 
             return Ok(products);
         }
 
         [HttpGet("{id}")]
-        public ObjectResult GetById(int id)
+        public ActionResult GetById(int id)
         {
-            var product = new ProductDto()
-            {
-
-                BarCode = "barcode",
-                CreateDate = DateTime.Now
-
-            };
+            var product = repository.GetById(id);
+            if (product == null)
+                return NotFound();
 
             return Ok(product);
         }
 
         [HttpPost]
-        public ObjectResult Create([FromBody] ProductDto productDto)
+        public ActionResult Create([FromBody] ProductDto productDto)
         {
             var product = ConvertProductDtoToModel(productDto);
 
             var response = repository.Create(product);
-            if (response == null)
-            {
-                throw new Exception("Não foi possível adicionar o produto");
-            }
-            else
-            {
-                return Created("", response);
-            }
+            return Created("", response);
         }
 
         [HttpPut("{id}")]
-        public ObjectResult Put(int id, [FromBody] ProductDto productDto)
+        public ActionResult Put(int id, [FromBody] ProductDto productDto)
         {
-            var product = ConvertProductDtoToModel(productDto);
+            var productInDb = repository.GetById(id);
+            var productModel = ConvertProductDtoToModel(productDto, productInDb);
 
-            var response = repository.Put(id, product);
-            if (response == null)
+            if (productInDb == null)
             {
-                throw new Exception("Não foi possível atualizar o produto");
+                var created = repository.Create(productModel);
+                return Created("", created);
             }
-            else
-            {
-                return Created("", response);
-            }
+
+            productModel.Id = id;
+            var response = repository.Update(productModel);
+            return Ok(response);
         }
 
         [HttpPatch("{id}")]
-        public ObjectResult Patch(int id, [FromBody] ProductDto productDto)
+        public ActionResult Patch(int id, [FromBody] ProductDto productDto)
         {
-            var product = ConvertProductDtoToModel(productDto);
+            var productInDb = repository.GetById(id);
+            if (productInDb == null)
+                return NotFound();
 
-            var response = repository.Patch(id, product);
-            if (response == null)
-            {
-                throw new Exception("Não foi possível atualizar o produto");
-            }
-            else
-            {
-                return Created("", response);
-            }
+            productDto.Barcode ??= productInDb.Barcode;
+            productDto.Description ??= productInDb.Description;
+            productDto.CreateDate ??= productInDb.CreateDate;
+            productDto.Price ??= productInDb.Price;
+            productDto.Quantity ??= productInDb.Quantity;
+
+            var productModel = ConvertProductDtoToModel(productDto, productInDb);
+
+            var response = repository.Update(productModel);
+            return Ok(response);
         }
 
         [HttpDelete("{id}")]
-        public ObjectResult Delete(int id)
+        public ActionResult Delete(int id)
         {
-            var response = repository.Delete(id);
-            if (response == null)
-            {
-                throw new Exception("Não foi possível remover o produto");
-            }
-            else
-            {
-                return Created("", response);
-            }
+            var productInDb = repository.GetById(id);
+            if (productInDb == null)
+                return NotFound();
+
+            repository.Delete(id);
+            return NoContent();
         }
 
-        private Product ConvertProductDtoToModel(ProductDto dto)
+        private Product ConvertProductDtoToModel(ProductDto dto, Product? model = null)
         {
-            var model = new Product()
-            {
-                Barcode = dto.BarCode,
-                Description = dto.Description,
-                Price = dto.Price,
-                Quantity = dto.Quantity,
-                CreateDate = dto.CreateDate
-            };
+            model ??= new Product();
+
+            model.Barcode = dto.Barcode;
+            model.Description = dto.Description;
+            model.Price = dto.Price;
+            model.Quantity = dto.Quantity;
+            model.CreateDate = dto.CreateDate;
 
             return model;
         }

@@ -15,7 +15,9 @@ namespace ExpirationDateControl_API.Repositories
 
         public Product Create(Product product)
         {
-            throw new NotImplementedException();
+            _context.Add(product);
+            _context.SaveChanges();
+            return product;
         }
 
         public int Delete(int id)
@@ -34,27 +36,34 @@ namespace ExpirationDateControl_API.Repositories
 
         public IQueryable<Product> GetAll(int page, int maxResults)
         {
-            throw new NotImplementedException();
+            var data = _context.Set<Product>().AsQueryable().Skip((page - 1) * maxResults).Take(maxResults);
+            return data.Any() ? data : new List<Product>().AsQueryable();
         }
 
         public IQueryable<Product> GetByFilter(int page, int maxResults, Product product)
         {
-            throw new NotImplementedException();
+            var data = _context.Set<Product>().AsQueryable()
+                .Where(p => (product.Barcode == null || p.Barcode.Contains(product.Barcode)) &&
+                            (product.Description == null || p.Description.Contains(product.Description)) &&
+                            (product.CreateDate == null || product.CreateDate == p.CreateDate) &&
+                            (product.Price == null || product.Price == p.Price) &&
+                            (product.Quantity == null || product.Quantity == p.Quantity))
+                .Skip((page - 1) * maxResults)
+                .Take(maxResults);
+
+            return data.Any() ? data : new List<Product>().AsQueryable();
         }
 
-        public Product GetById(int id)
+        public Product? GetById(int id)
         {
-            throw new NotImplementedException();
+            return _context.Find<Product>(id);
         }
 
-        public Product Patch(int id, Product product)
+        public Product Update(Product product)
         {
-            throw new NotImplementedException();
-        }
-
-        public Product Put(int id, Product product)
-        {
-            throw new NotImplementedException();
+            _context.Update(product);
+            _context.SaveChanges();
+            return product;
         }
     }
 }
