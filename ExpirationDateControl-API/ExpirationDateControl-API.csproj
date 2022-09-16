@@ -5,6 +5,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>ExpirationDateControl_API</RootNamespace>
+    <UserSecretsId>f061a8f9-ecee-4858-9a28-fd298f58b016</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>

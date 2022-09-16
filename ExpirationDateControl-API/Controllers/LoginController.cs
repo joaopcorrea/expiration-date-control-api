@@ -19,6 +19,8 @@ namespace ExpirationDateControl_API.Controllers
         }
 
         [HttpPost()]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
         public IActionResult Login([FromBody] Authenticate authInfo)
         {
             var user = _repository.Login(authInfo.Username, authInfo.Password);

@@ -8,6 +8,7 @@ namespace ExpirationDateControl_API.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    [Authorize]
     public class ProductController : ControllerBase
     {
         IProductRepository repository;
@@ -18,8 +19,8 @@ namespace ExpirationDateControl_API.Controllers
 
         [HttpGet]
         [ProducesResponseType(typeof(IQueryable<Product>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
-        [Authorize]
         public ActionResult GetAll(int page = 1, int maxResults = 100)
         {
             var products = repository.GetAll(page, maxResults);
@@ -31,7 +32,8 @@ namespace ExpirationDateControl_API.Controllers
 
         [HttpPost("query")]
         [ProducesResponseType(typeof(IQueryable<Product>), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(string),  StatusCodes.Status404NotFound)]
         public ActionResult GetByFilter([FromBody] ProductDto productDto, int page = 1, int maxResults = 100)
         {
             var productModel = ConvertProductDtoToModel(productDto);
@@ -44,7 +46,8 @@ namespace ExpirationDateControl_API.Controllers
 
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(Product), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
         public ActionResult GetById(int id)
         {
             var product = repository.GetById(id);
@@ -56,6 +59,7 @@ namespace ExpirationDateControl_API.Controllers
 
         [HttpPost]
         [ProducesResponseType(typeof(Product), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
         public ActionResult Create([FromBody] ProductDto productDto)
         {
             var product = ConvertProductDtoToModel(productDto);
@@ -67,6 +71,7 @@ namespace ExpirationDateControl_API.Controllers
         [HttpPut("{id}")]
         [ProducesResponseType(typeof(Product), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(Product), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
         public ActionResult Put(int id, [FromBody] ProductDto productDto)
         {
             var productInDb = repository.GetById(id);
@@ -85,7 +90,8 @@ namespace ExpirationDateControl_API.Controllers
 
         [HttpPatch("{id}")]
         [ProducesResponseType(typeof(Product), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
         public ActionResult Patch(int id, [FromBody] ProductDto productDto)
         {
             var productInDb = repository.GetById(id);
@@ -105,8 +111,9 @@ namespace ExpirationDateControl_API.Controllers
         }
 
         [HttpDelete("{id}")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
         public ActionResult Delete(int id)
         {
             var productInDb = repository.GetById(id);
