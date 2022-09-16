@@ -18,5 +18,10 @@ namespace ExpirationDateControl_API.Models
         public double? Price { get; set; }
         [JsonPropertyName("quantity")]
         public int? Quantity { get; set; }
+
+        public Product Clone()
+        {
+            return (Product)this.MemberwiseClone(); // Shallow Clone
+        }
     }
 }

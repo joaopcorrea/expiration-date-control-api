@@ -1,5 +1,6 @@
 using ExpirationDateControl_API.AuthorizationAndAuthentication;
 using ExpirationDateControl_API.Context;
+using ExpirationDateControl_API.Filters;
 using ExpirationDateControl_API.Repositories;
 using ExpirationDateControl_API.Repositories.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -13,7 +14,11 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers(options =>
+{
+    options.Filters.Add(typeof(CustomLogsFilter));
+});
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(option =>
