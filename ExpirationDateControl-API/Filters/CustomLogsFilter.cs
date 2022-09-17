@@ -48,10 +48,10 @@ namespace ExpirationDateControl_API.Filters
             {
                 if (_sucessStatusCodes.Contains(context.HttpContext.Response.StatusCode))
                 {
-                    var id = int.Parse(context.HttpContext.Request.Path.ToString().Split("/").Last());
                     if (context.HttpContext.Request.Method.Equals("put", StringComparison.InvariantCultureIgnoreCase)
                         || context.HttpContext.Request.Method.Equals("patch", StringComparison.InvariantCultureIgnoreCase))
                     {
+                        var id = int.Parse(context.HttpContext.Request.Path.ToString().Split("/").Last());
                         var afterUpdate = _repository.GetById(id);
                         if (afterUpdate != null)
                         {
@@ -65,6 +65,7 @@ namespace ExpirationDateControl_API.Filters
                     }
                     else if (context.HttpContext.Request.Method.Equals("delete", StringComparison.InvariantCultureIgnoreCase))
                     {
+                        var id = int.Parse(context.HttpContext.Request.Path.ToString().Split("/").Last());
                         Product beforeUpdate;
                         if (_contextDict.TryGetValue(id, out beforeUpdate))
                         {
