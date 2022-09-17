@@ -12,6 +12,11 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddCors(cors => cors.AddPolicy("AllowOriginAndMethod", options => options
+                .WithOrigins(new[] { "https://localhost" })
+                .WithMethods(new[] { "*" })
+                ));
+
 // Add services to the container.
 
 builder.Services.AddControllers(options =>
@@ -93,6 +98,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors("AllowOriginAndMethod");
 
 app.UseAuthentication();
 app.UseAuthorization();
